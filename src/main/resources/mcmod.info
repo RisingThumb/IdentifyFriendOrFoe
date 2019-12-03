@@ -1,0 +1,16 @@
+[
+{
+  "modid": "iff",
+  "name": "IFF",
+  "description": "Identify Friend or Foe",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "https://risingthumb.xyz/",
+  "updateUrl": "",
+  "authorList": ["RisingThumb"],
+  "credits": "RisingThumb",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
