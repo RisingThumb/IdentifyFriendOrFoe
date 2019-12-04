@@ -2,22 +2,20 @@ package xyz.risingthumb.iff;
 
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import xyz.risingthumb.iff.classes.Group;
-import xyz.risingthumb.iff.classes.GroupPerson;
+import xyz.risingthumb.iff.groups.Group;
+import xyz.risingthumb.iff.groups.GroupPerson;
 import xyz.risingthumb.iff.proxy.ClientProxy;
 import xyz.risingthumb.iff.proxy.IProxy;
 
@@ -39,7 +37,7 @@ public class IFFMod {
 	
 	public static final String CLIENT="xyz.risingthumb.iff.proxy.ClientProxy";
 	public static final String SERVER="xyz.risingthumb.iff.proxy.ServerProxy";
-	
+
 	@SidedProxy(clientSide=IFFMod.CLIENT, serverSide=IFFMod.SERVER)
 	public static IProxy proxy;
 	

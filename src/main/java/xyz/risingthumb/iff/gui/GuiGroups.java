@@ -11,8 +11,8 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextComponentString;
 import xyz.risingthumb.iff.IFFMod;
-import xyz.risingthumb.iff.classes.Group;
-import xyz.risingthumb.iff.classes.GroupPerson;
+import xyz.risingthumb.iff.groups.Group;
+import xyz.risingthumb.iff.groups.GroupPerson;
 import xyz.risingthumb.iff.proxy.ClientProxy;
 
 public class GuiGroups extends GuiScreen {
