@@ -3,7 +3,7 @@ package xyz.risingthumb.iff.proxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import xyz.risingthumb.iff.classes.GroupManager;
+import xyz.risingthumb.iff.groups.GroupManager;
 
 public class ClientProxy implements IProxy {
 	
