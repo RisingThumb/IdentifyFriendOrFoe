@@ -9,7 +9,6 @@ eclipse
 
 # idea
 out
-classes
 *.ipr
 *.iws
 *.iml
