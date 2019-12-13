@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.Loader;
@@ -52,6 +53,8 @@ public class IFFMod {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		proxy.init(event);
+		KeyBindings keybinds = new KeyBindings();
+        keybinds.RegisterKeybinds();
 	}
 	
 	@EventHandler

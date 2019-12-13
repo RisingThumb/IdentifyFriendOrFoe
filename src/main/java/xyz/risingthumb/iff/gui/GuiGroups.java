@@ -1,6 +1,7 @@
 package xyz.risingthumb.iff.gui;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -24,13 +25,17 @@ public class GuiGroups extends GuiScreen {
 	GuiButton buttonRemoveGroup;
 	GuiButton buttonAddPlayer;
 	GuiButton buttonRemovePlayer;
+	GuiButton buttonRenameGroup;
+	GuiButton buttonRenamePlayer;
 	// This is basically Enums, but Java fucking sucks for enums
 	// So I'm just doing this. Fuck Java
 	private final int BUTTONADDGROUP = 0;
 	private final int BUTTONREMOVEGROUP = 1;
-	private final int BUTTONADDPLAYER = 2;
-	private final int BUTTONREMOVEPLAYER = 3;
-	private final int BUTTONUTILITYEND = 4;
+	private final int BUTTONRENAMEGROUP = 2;
+	private final int BUTTONADDPLAYER = 3;
+	private final int BUTTONREMOVEPLAYER = 4;
+	private final int BUTTONRENAMEPLAYER = 5;
+	private final int BUTTONUTILITYEND = 6;
 	private final int groupIDStart = 100;
 	private final int playerIDStart = 50000;
 	//final int playerIDStart = 10000;
@@ -58,7 +63,7 @@ public class GuiGroups extends GuiScreen {
 		}
 	}
 	
-	private void removeTabName(String name) {
+	public static void removeTabName(String name) {
 		String username = name;
 		NetworkPlayerInfo npi = Minecraft.getMinecraft().getConnection().getPlayerInfo(username);
 		//npi.setDisplayName(new TextComponentString(TextFormatting.AQUA+g.getName()+" "+username));
@@ -109,25 +114,28 @@ public class GuiGroups extends GuiScreen {
 		
 		buttonList.add(buttonAddGroup = new GuiButton(BUTTONADDGROUP, 1, 40, 80, 20, "Add Group"));
 		buttonList.add(buttonRemoveGroup = new GuiButton(BUTTONREMOVEGROUP, 1, 60, 80, 20, "Remove Group"));
+		buttonList.add(buttonRenameGroup = new GuiButton(BUTTONRENAMEGROUP, 1, 80, 80, 20, "Rename"));
 		
 		buttonList.add(buttonAddPlayer = new GuiButton(BUTTONADDPLAYER, this.width-81, 40, 80, 20, "Add Player"));
 		buttonList.add(buttonRemovePlayer = new GuiButton(BUTTONREMOVEPLAYER, this.width-81, 60, 80, 20, "Remove Player"));
+		buttonList.add(buttonRenamePlayer = new GuiButton(BUTTONRENAMEPLAYER, this.width-81, 80, 80, 20, "Rename"));
 		
 		for(int i = 0; i<ClientProxy.groupManager.getSize(); i++) {
-			buttonList.add(new GuiButton(i+groupIDStart, 5, 100+20*(i), 60, 20, ClientProxy.groupManager.getNameOfGroup(i)));
+			buttonList.add(new GuiButton(i+groupIDStart, 5, 120+20*(i), 60, 20, ClientProxy.groupManager.getNameOfGroup(i)));
 		}
 		
 		if(selectedGroup != -1) {
 			buttonList.get(selectedGroup+BUTTONUTILITYEND).enabled = false;
 			Group group = ClientProxy.groupManager.getGroup(selectedGroup);
 			for(int i = 0; i<group.size(); i++) {
-				buttonList.add(new GuiButton(i+playerIDStart, this.width-146, 100+20*(i), 60, 20, group.getPerson(i).getName()));
+				buttonList.add(new GuiButton(i+playerIDStart, this.width-146, 120+20*(i), 60, 20, group.getPerson(i).getName()));
 			}
 		}
 		
 		if(selectedGroup == -1) {
 			buttonList.get(BUTTONADDPLAYER).enabled = false;
 			buttonList.get(BUTTONREMOVEPLAYER).enabled = false;
+			buttonList.get(BUTTONRENAMEPLAYER).enabled = false;
 		}
 		
 		if(selectedPlayer != -1) {
@@ -164,6 +172,25 @@ public class GuiGroups extends GuiScreen {
 				Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Must select a group in the group list"));
 			}
 			break;
+		case BUTTONRENAMEGROUP:
+			if(selectedGroup!=-1) {
+				// Need to remove the tab name of all users in the group
+				Group g = ClientProxy.groupManager.getGroup(selectedGroup);
+				List<GroupPerson> gp = g.getPersons();
+				g.setPrefix(textFieldGroupName.getText());
+				for(GroupPerson p:gp) {
+					player = Minecraft.getMinecraft().world.getPlayerEntityByName(p.getName());
+					if (player!=null) {
+						player.refreshDisplayName();
+					}
+				}
+				fixTabName();
+				IFFMod.saveConfig();
+			}
+			else if (selectedGroup==-1) {
+				Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Must select a group in the group list"));
+			}
+			break;
 		case BUTTONADDPLAYER:
 			ClientProxy.groupManager.getGroup(selectedGroup).addPerson(new GroupPerson(textFieldPlayerName.getText()));
 			Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Added player "+textFieldPlayerName.getText()));
@@ -183,6 +210,26 @@ public class GuiGroups extends GuiScreen {
 				removeTabName(ClientProxy.groupManager.getGroup(selectedGroup).getPerson(selectedPlayer).getName());
 				ClientProxy.groupManager.getGroup(selectedGroup).removePerson(selectedPlayer);
 				selectedPlayer = -1;
+				IFFMod.saveConfig();
+			}
+			else if (selectedPlayer==-1) {
+				Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Must select a player in the player list"));
+			}
+			break;
+		case BUTTONRENAMEPLAYER:
+			if(selectedGroup!=-1 && selectedPlayer!=-1) {
+				player = Minecraft.getMinecraft().world.getPlayerEntityByName(ClientProxy.groupManager.getGroup(selectedGroup).getPerson(selectedPlayer).getName());
+				removeTabName(ClientProxy.groupManager.getGroup(selectedGroup).getPerson(selectedPlayer).getName());
+				
+				ClientProxy.groupManager.getGroup(selectedGroup).getPerson(selectedPlayer).setName(textFieldPlayerName.getText());
+				if (player!=null) {
+					player.refreshDisplayName();
+				}
+				player = Minecraft.getMinecraft().world.getPlayerEntityByName(ClientProxy.groupManager.getGroup(selectedGroup).getPerson(selectedPlayer).getName());
+				if (player!=null) {
+					player.refreshDisplayName();
+				}
+				fixTabName();
 				IFFMod.saveConfig();
 			}
 			else if (selectedPlayer==-1) {
